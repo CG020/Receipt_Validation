@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Camila Grubb</title>
+  <style>
+    form {
+      border-style: outset;
+      border-width: 8px;
+      width: 300px;
+      margin: 8px;
+      background-color: lightblue;
+      padding-left: 10px;
+    }
+    input {
+      margin-bottom: 20px;
+    }
+    select {
+      margin-bottom: 20px;
+    }
+    .rad {
+      margin-bottom: -10px;
+    }
+    .receipt {
+      border-style: outset;
+      border-width: 8px;
+      background-color: #FFC1C1;
+      border-color: red;
+      padding-left: 10px;
+      width: 300px;
+      margin: 8px;
+    }
+    fieldset {
+      width: 250px;
+    }
+  </style>
+</head>
+<body>
+
+<form onsubmit="JSFunction();return false">
+
+  <h3><br>Widget Purchase</h3>
+
+  <input type="text" id="firstName" pattern="[A-Z a-z]*" required> First Name
+  <input type="text" id="lastName" pattern="[A-Z a-z]*" required> Last Name
+  <input type="text" id="phoneNum" pattern="^(\+0?1\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$" required> Phone
+  <input type="text" id="cityName" pattern="[A-Z a-z]*" required> City <br>
+
+
+  <select id="states">
+    <option selected value="">State</option>
+    <option value="AZ">AZ</option>
+    <option value="CA">CA</option>
+    <option value="NY">NY</option>
+    <option value="HI">HI</option>
+  </select>
+  <br>
+
+  <input type="text" id="zipNum" pattern="[0-9]{5}" required> Zip <br>
+
+  <input type="number" id="numQuan" min="1" max="5" required> Quantity (1-5) <br>
+
+  <input class="rad" type="radio" id="one" name="size" value="Small $2.00"> Small $2.00 <br>
+  <input class="rad" type="radio" id="two" name="size" value="Medium $2.65"> Medium $2.65 <br>
+  <input class="rad" type="radio" id="three" name="size" value="Large $2.99"> Large $2.99 <br>
+
+  <br>
+  <input type="submit">
+
+</form>
+<br>
+
+<div id="rec"></div>
+
+<script>
+  // sets the values
+  let firstName;
+  let lastName;
+  let phoneNum;
+  let cityName;
+  let zipNum;
+  let numQuan;
+  let small;
+  let medium;
+  let large;
+  let size = "Not selected";
+  function setAllValues(){
+    firstName = document.getElementById("firstName").value;
+    lastName = document.getElementById("lastName").value;
+    phoneNum = document.getElementById("phoneNum").value;
+    cityName = document.getElementById("cityName").value;
+    zipNum = document.getElementById("zipNum").value;
+    numQuan = document.getElementById("numQuan").value;
+    small = document.getElementById("one");
+    medium = document.getElementById("two");
+    large = document.getElementById("three");
+    if (small.checked) {
+      size = small.value;
+    }
+    if (medium.checked) {
+      size = medium.value;
+    }
+    if (large.checked) {
+      size = large.value;
+    }
+  }
+
+  // function that runs to retrieve state selection
+  const stateSelection = document.getElementById("states");
+  stateSelection.addEventListener('change', stateSelect);
+  let stateName = "Not selected";
+  function stateSelect(){
+    stateName = stateSelection.options[stateSelection.selectedIndex].value;
+  }
+
+  // calculates the total price of the purchase
+  function getPrice(){
+    let mult = Number(size.substring(size.indexOf("$") + 1));
+    let price = mult * Number(numQuan);
+    return price.toFixed(2);
+  }
+
+  // function that makes the string inside Receipt
+  function getTheHTML(){
+    let str = '<div class="receipt">';
+    str += '<h3>Receipt</h3>'
+    str += 'Purchase Date: ' + formatDate(new Date()) + '<br>';
+    str += 'Purchased ' + numQuan + ' ' + (size.substring(0, size.indexOf(" "))).toLowerCase() + ' item(s)' + '<br>';
+    str += "Total Cost $" + getPrice() + "<br><br>";
+    str += '<fieldset>';
+    str += '<legend>Ship to</legend>';
+    str += firstName + ' ' + lastName + '<br>';
+    str += cityName + ', ' + stateName + '<br>' + zipNum + '<br>';
+    str += '</fieldset>';
+    str += '<br>'
+    str += '</div>'
+    return str;
+  }
+
+  //formats the date
+  function formatDate(){
+    const today = new Date();
+    console.assert(9 === today.getMonth());
+    month = "Oct";
+    day = today.getDate();
+    year = today.getFullYear();
+    return ("" + day + "-" + month + "-" + year);
+  }
+
+  function JSFunction() {
+    setAllValues();
+    let newInfo = document.getElementById("rec");
+    newInfo.innerHTML = getTheHTML();
+  }
+</script>
+
+</body>
+</html>
